@@ -32,7 +32,8 @@ import {
   Clock,
   MapPin,
   Scale,
-  Package
+  Package,
+  Layers
 } from 'lucide-react';
 
 interface BatchData {
@@ -76,6 +77,7 @@ export default function Home() {
   });
   const [activeTab, setActiveTab] = useState<'track' | 'farmer' | 'logistics' | 'retailer' | 'admin'>('track');
   const [loading, setLoading] = useState<boolean>(false);
+  const [fetchingList, setFetchingList] = useState<boolean>(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   // User Dropdown State
@@ -86,6 +88,7 @@ export default function Home() {
   // State Tracking
   const [searchId, setSearchId] = useState<string>('');
   const [batchDetail, setBatchDetail] = useState<BatchData | null>(null);
+  const [batchList, setBatchList] = useState<BatchData[]>([]);
   const [showQRModal, setShowQRModal] = useState<boolean>(false);
 
   // Form Petani
@@ -132,7 +135,59 @@ export default function Home() {
     }
   }, []);
 
-  // 1. Fungsi Publik: Lacak Batch
+  // 1. Fungsi Publik: Ambil Seluruh Daftar Batch dari Smart Contract
+  const fetchAllBatches = useCallback(async () => {
+    try {
+      setFetchingList(true);
+      const publicProvider = new ethers.JsonRpcProvider(SEPOLIA_RPC_URL);
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, publicProvider);
+
+      const ids: string[] = await contract.getAllBatchIds();
+      
+      const list: BatchData[] = [];
+      // Ambil detail batch (dari yang terbaru)
+      for (let i = ids.length - 1; i >= 0; i--) {
+        try {
+          const data = await contract.getBatch(ids[i]);
+          list.push({
+            batchId: data.batchId,
+            commodityName: data.commodityName,
+            weight: Number(data.weight),
+            farmLocation: data.farmLocation,
+            status: Number(data.status),
+            farmer: data.farmer,
+            logistics: data.logistics,
+            retailer: data.retailer,
+            createdAt: Number(data.createdAt),
+            updatedAt: Number(data.updatedAt),
+          });
+        } catch (itemErr) {
+          console.error(`Error loading batch ${ids[i]}:`, itemErr);
+        }
+      }
+      setBatchList(list);
+
+      // Jika ada batch dan belum ada yang dipilih, tampilkan yang terbaru otomatis!
+      if (list.length > 0 && !searchId) {
+        setSearchId(list[0].batchId);
+        setBatchDetail(list[0]);
+      }
+    } catch (err) {
+      console.error('Error fetching all batches:', err);
+    } finally {
+      setFetchingList(false);
+    }
+  }, [searchId]);
+
+  // Muat daftar batch otomatis saat pertama kali aplikasi dibuka
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchAllBatches();
+    }, 10);
+    return () => clearTimeout(timer);
+  }, [fetchAllBatches]);
+
+  // 2. Fungsi Publik: Lacak Batch Spesifik
   const trackBatch = useCallback(async (idToSearch?: string) => {
     const id = idToSearch || searchId;
     if (!id.trim()) return;
@@ -159,7 +214,10 @@ export default function Home() {
     } catch (err: unknown) {
       console.error(err);
       setBatchDetail(null);
-      setMessage({ text: `Batch ID "${id}" tidak ditemukan di smart contract Sepolia. Pastikan ID sudah benar.`, type: 'error' });
+      setMessage({ 
+        text: `Batch ID "${id}" tidak ditemukan di smart contract Sepolia. Pastikan penulisan huruf besar/kecil dan tanda hubung sudah sesuai.`, 
+        type: 'error' 
+      });
     } finally {
       setLoading(false);
     }
@@ -222,7 +280,7 @@ export default function Home() {
     }
   }, [refreshUserRole]);
 
-  // Ganti Akun MetaMask (Switch Account Dialog)
+  // Ganti Akun MetaMask
   const switchAccount = async () => {
     if (typeof window === 'undefined' || !('ethereum' in window)) return;
     const eth = (window as unknown as { ethereum: Eip1193Provider }).ethereum;
@@ -237,7 +295,7 @@ export default function Home() {
     }
   };
 
-  // Logout / Putuskan Koneksi
+  // Logout
   const handleLogout = () => {
     setAccount('');
     setUserRoles({ isAdmin: false, isFarmer: false, isLogistics: false, isRetailer: false });
@@ -253,7 +311,7 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // Listener event MetaMask (Otomatis ganti akun jika diubah di ekstensi)
+  // Listener event MetaMask
   useEffect(() => {
     if (typeof window === 'undefined' || !('ethereum' in window)) return;
     const eth = (window as unknown as { ethereum: Eip1193Provider }).ethereum;
@@ -288,7 +346,7 @@ export default function Home() {
     return { contract: new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer), signer, provider };
   };
 
-  // 2. Fungsi Petani: Registrasi Panen
+  // 3. Fungsi Petani: Registrasi Panen
   const handleRegisterHarvest = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -320,7 +378,8 @@ export default function Home() {
       const createdId = farmerForm.batchId.trim();
       setFarmerForm({ batchId: '', commodityName: '', weight: '', farmLocation: '' });
       setSearchId(createdId);
-      trackBatch(createdId);
+      await fetchAllBatches();
+      await trackBatch(createdId);
       setActiveTab('track');
     } catch (err: unknown) {
       console.error(err);
@@ -331,7 +390,7 @@ export default function Home() {
     }
   };
 
-  // 3. Fungsi Logistik: Kirim Barang
+  // 4. Fungsi Logistik: Kirim Barang
   const handleShipBatch = async () => {
     if (!targetBatchId.trim()) return;
     try {
@@ -355,7 +414,8 @@ export default function Home() {
       await tx.wait();
 
       setMessage({ text: `Sukses! Batch "${targetBatchId}" sekarang dalam status InTransit (Dalam Pengiriman)!`, type: 'success' });
-      trackBatch(targetBatchId.trim());
+      await fetchAllBatches();
+      await trackBatch(targetBatchId.trim());
       setActiveTab('track');
     } catch (err: unknown) {
       console.error(err);
@@ -366,7 +426,7 @@ export default function Home() {
     }
   };
 
-  // 4. Fungsi Retailer: Konfirmasi Penerimaan
+  // 5. Fungsi Retailer: Konfirmasi Penerimaan
   const handleConfirmDelivery = async () => {
     if (!targetBatchId.trim()) return;
     try {
@@ -390,7 +450,8 @@ export default function Home() {
       await tx.wait();
 
       setMessage({ text: `Sukses! Batch "${targetBatchId}" resmi diterima di Toko (Delivered)!`, type: 'success' });
-      trackBatch(targetBatchId.trim());
+      await fetchAllBatches();
+      await trackBatch(targetBatchId.trim());
       setActiveTab('track');
     } catch (err: unknown) {
       console.error(err);
@@ -401,7 +462,7 @@ export default function Home() {
     }
   };
 
-  // 5. Fungsi Admin: Memberikan Role ke Akun
+  // 6. Fungsi Admin: Memberikan Role ke Akun
   const grantRoleDirect = async (roleHash: string, targetAddress: string, roleName: string) => {
     if (!ethers.isAddress(targetAddress)) {
       alert('Alamat wallet tidak valid! Pastikan format 0x... sudah benar.');
@@ -697,7 +758,7 @@ export default function Home() {
                     <Search className="w-5 h-5 text-slate-400 mr-2 flex-shrink-0" />
                     <input
                       type="text"
-                      placeholder="Masukkan Batch ID (Contoh: AGRI-001)"
+                      placeholder="Masukkan Batch ID (Contoh: agri-1)"
                       value={searchId}
                       onChange={(e) => setSearchId(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && trackBatch()}
@@ -713,6 +774,61 @@ export default function Home() {
                   </button>
                 </div>
               </div>
+            </div>
+
+            {/* DAFTAR BATCH YANG SUDAH TERDAFTAR DI BLOCKCHAIN */}
+            <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/90">
+              <div className="flex justify-between items-center mb-4">
+                <div className="flex items-center gap-2">
+                  <Layers className="w-5 h-5 text-emerald-700" />
+                  <h3 className="font-extrabold text-slate-800 text-sm sm:text-base">
+                    Daftar Batch Terdaftar di Sepolia ({batchList.length})
+                  </h3>
+                </div>
+                <button
+                  onClick={fetchAllBatches}
+                  disabled={fetchingList}
+                  className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${fetchingList ? 'animate-spin' : ''}`} />
+                  Refresh Daftar
+                </button>
+              </div>
+
+              {fetchingList ? (
+                <div className="py-8 text-center text-slate-400 flex items-center justify-center gap-2 text-xs">
+                  <Loader2 className="w-4 h-4 animate-spin" /> Memuat data batch dari blockchain Sepolia...
+                </div>
+              ) : batchList.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {batchList.map((item) => (
+                    <div
+                      key={item.batchId}
+                      onClick={() => {
+                        setSearchId(item.batchId);
+                        setBatchDetail(item);
+                      }}
+                      className={`p-4 rounded-2xl border transition cursor-pointer text-left ${
+                        searchId === item.batchId 
+                          ? 'bg-emerald-50/70 border-emerald-400 shadow-xs ring-2 ring-emerald-500/20' 
+                          : 'bg-slate-50/60 border-slate-200/80 hover:bg-slate-100 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex justify-between items-start gap-2 mb-2">
+                        <span className="font-mono font-black text-sm text-slate-800 truncate">{item.batchId}</span>
+                        {getStatusBadge(item.status)}
+                      </div>
+                      <p className="text-xs font-bold text-slate-700 truncate">{item.commodityName}</p>
+                      <div className="flex items-center justify-between text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-200/60">
+                        <span>{item.weight} Kg • {item.farmLocation}</span>
+                        <span className="text-emerald-700 font-bold hover:underline">Pilih →</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400 py-4 text-center">Belum ada batch yang terdaftar di smart contract.</p>
+              )}
             </div>
 
             {/* Hasil Tampilan Detail Batch */}
@@ -863,7 +979,7 @@ export default function Home() {
                 <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
                 <h4 className="font-bold text-slate-700 text-base">Belum Ada Batch yang Dilacak</h4>
                 <p className="text-slate-400 text-xs max-w-md mx-auto mt-1">
-                  Ketikkan Batch ID di atas (misal <span className="font-mono font-bold text-emerald-600">agri_1</span> atau hasil panen barumu) lalu klik Lacak.
+                  Pilih salah satu batch dari daftar di atas atau ketikkan Batch ID di kolom pencarian.
                 </p>
               </div>
             )}
@@ -900,7 +1016,7 @@ export default function Home() {
                 <input
                   type="text"
                   required
-                  placeholder="Contoh: BATCH-KOPI-001"
+                  placeholder="Contoh: AGRI-002"
                   value={farmerForm.batchId}
                   onChange={(e) => setFarmerForm({ ...farmerForm, batchId: e.target.value })}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
@@ -985,7 +1101,7 @@ export default function Home() {
                 <label className="block text-xs font-bold text-slate-700 mb-1">Batch ID yang Akan Dikirim</label>
                 <input
                   type="text"
-                  placeholder="Masukkan Batch ID (Contoh: BATCH-KOPI-001)"
+                  placeholder="Masukkan Batch ID (Contoh: agri-1)"
                   value={targetBatchId}
                   onChange={(e) => setTargetBatchId(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-amber-500 focus:outline-none"
@@ -1033,7 +1149,7 @@ export default function Home() {
                 <label className="block text-xs font-bold text-slate-700 mb-1">Batch ID yang Tiba di Toko</label>
                 <input
                   type="text"
-                  placeholder="Masukkan Batch ID (Contoh: BATCH-KOPI-001)"
+                  placeholder="Masukkan Batch ID (Contoh: agri-1)"
                   value={targetBatchId}
                   onChange={(e) => setTargetBatchId(e.target.value)}
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
