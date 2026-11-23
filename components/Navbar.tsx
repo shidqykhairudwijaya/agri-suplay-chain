@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWallet } from "@/context/WalletContext";
@@ -21,23 +21,31 @@ export default function Navbar() {
     logout,
   } = useWallet();
 
+  const [mounted, setMounted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Pastikan render awal di client sama persis dengan server (mencegah Hydration Mismatch)
+  const isUserAuthenticated = mounted && isLoggedIn && Boolean(account);
 
   // Periksa apakah halaman aktif adalah Lacak Panen atau Daftar Panen
   const isTrackingActive = pathname === "/" || pathname.startsWith("/tracking");
   const isBatchesActive = pathname === "/batches";
 
-  // Hanya tampilkan 1 link panel dashboard yang sesuai dengan peran aktif akun terhubung
+  // Hanya tampilkan 1 link panel dashboard yang sesuai dengan peran aktif akun terhubung setelah mounted
   const singleDashboardLink = React.useMemo(() => {
-    if (!isLoggedIn || !userInfo || !activeDashboardHref) return null;
+    if (!mounted || !isLoggedIn || !userInfo || !activeDashboardHref) return null;
     if (userInfo.isAdmin) return { href: "/dashboard/admin", label: "Panel Admin" };
     if (userInfo.isFarmer) return { href: "/dashboard/farmer", label: "Panel Petani" };
     if (userInfo.isLogistics) return { href: "/dashboard/logistics", label: "Panel Pengiriman" };
     if (userInfo.isRetailer) return { href: "/dashboard/retailer", label: "Panel Penerimaan" };
     return null;
-  }, [isLoggedIn, userInfo, activeDashboardHref]);
+  }, [mounted, isLoggedIn, userInfo, activeDashboardHref]);
 
   const getRoleBadgeClass = (role: string) => {
     switch (role) {
@@ -106,7 +114,7 @@ export default function Navbar() {
 
           {/* Right Side: Masuk Akun / User Pill & Mobile Hamburger */}
           <div className="flex items-center gap-2">
-            {!isLoggedIn || !account ? (
+            {!isUserAuthenticated || !account ? (
               <button
                 onClick={() => setIsLoginModalOpen(true)}
                 className="bg-[#0e7039] hover:bg-[#0b5c2e] text-white font-medium text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-2.5 rounded-full shadow-sm hover:shadow transition-all cursor-pointer flex items-center gap-1.5"

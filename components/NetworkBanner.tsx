@@ -6,9 +6,14 @@ import { AlertTriangle, RefreshCw } from "lucide-react";
 
 export default function NetworkBanner() {
   const { account, chainId, isCorrectNetwork, switchNetwork } = useWallet();
+  const [mounted, setMounted] = React.useState(false);
 
-  // Hanya tampilkan jika dompet terhubung namun jaringan bukan Sepolia
-  if (!account || isCorrectNetwork) {
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Hanya tampilkan jika dompet terhubung namun jaringan bukan Sepolia, setelah komponen mounted di client
+  if (!mounted || !account || isCorrectNetwork) {
     return null;
   }
 
