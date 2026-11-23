@@ -24,8 +24,9 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  // Periksa apakah halaman aktif adalah Lacak Panen
+  // Periksa apakah halaman aktif adalah Lacak Panen atau Daftar Panen
   const isTrackingActive = pathname === "/" || pathname.startsWith("/tracking");
+  const isBatchesActive = pathname === "/batches";
 
   // Hanya tampilkan 1 link panel dashboard yang sesuai dengan peran aktif akun terhubung
   const singleDashboardLink = React.useMemo(() => {
@@ -74,6 +75,16 @@ export default function Navbar() {
             >
               <span>Lacak Panen</span>
               {isTrackingActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0e7039] absolute -bottom-1"></span>
+              )}
+            </Link>
+
+            <Link
+              href="/batches"
+              className="flex flex-col items-center text-sm font-semibold text-gray-800 hover:text-[#0e7039] transition relative py-1"
+            >
+              <span>Daftar Panen</span>
+              {isBatchesActive && (
                 <span className="w-1.5 h-1.5 rounded-full bg-[#0e7039] absolute -bottom-1"></span>
               )}
             </Link>
