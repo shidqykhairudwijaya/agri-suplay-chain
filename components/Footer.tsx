@@ -15,7 +15,7 @@ export default function Footer() {
         </div>
         <p>
           Ethereum Sepolia Smart Contract:{" "}
-          <span className="font-mono text-gray-700 font-medium">0x90CA...0fa9</span>
+          <span className="font-mono text-gray-700 font-medium">0xC978...2044</span>
         </p>
       </div>
     </footer>

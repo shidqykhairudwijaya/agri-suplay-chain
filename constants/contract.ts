@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 
-export const CONTRACT_ADDRESS = "0x90CA35562D26Ddb93936eA5048821E8cC6390fa9";
-export const START_BLOCK = 12195501;
+export const CONTRACT_ADDRESS = "0xC978D3Eb11D356c45f0AD4FF1A12EFe967502044";
+export const START_BLOCK = 12196146;
 export const SEPOLIA_CHAIN_ID = 11155111;
 export const SEPOLIA_CHAIN_HEX = "0xaa36a7";
 
