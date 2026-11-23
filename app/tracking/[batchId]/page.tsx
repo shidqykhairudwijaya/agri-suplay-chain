@@ -167,9 +167,9 @@ function TrackingDetailInner({
           </h2>
 
           {/* Baris Kode Panen, Status Badge, & Tombol Lihat QR Code */}
-          <div className="flex items-center justify-between flex-wrap gap-2 pb-4 border-b border-gray-100">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl font-extrabold text-gray-900 tracking-tight">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-gray-100">
+            <div className="flex items-center justify-between sm:justify-start gap-3">
+              <span className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
                 {batch.batchId}
               </span>
               <span
@@ -181,7 +181,7 @@ function TrackingDetailInner({
 
             <button
               onClick={() => setShowQRModal(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold transition shadow-2xs cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-2.5 sm:py-1.5 rounded-xl border border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold transition shadow-2xs cursor-pointer min-h-[42px] sm:min-h-0"
             >
               <QrCode className="w-3.5 h-3.5 text-[#0e7039]" />
               Lihat QR Code
@@ -189,38 +189,38 @@ function TrackingDetailInner({
           </div>
 
           {/* Detail Metadata Rantai Pasok */}
-          <div className="divide-y divide-gray-100 text-sm">
-            <div className="py-3.5 flex justify-between items-center gap-4">
-              <span className="text-gray-500">Komoditas</span>
-              <span className="font-semibold text-gray-800 text-right">
+          <div className="divide-y divide-gray-100 text-xs sm:text-sm">
+            <div className="py-3 sm:py-3.5 flex justify-between items-start sm:items-center gap-3">
+              <span className="text-gray-500 flex-shrink-0">Komoditas</span>
+              <span className="font-semibold text-gray-800 text-right break-words max-w-[65%]">
                 {batch.commodityName}
               </span>
             </div>
 
-            <div className="py-3.5 flex justify-between items-center gap-4">
-              <span className="text-gray-500">Berat</span>
-              <span className="font-semibold text-gray-800 text-right">
+            <div className="py-3 sm:py-3.5 flex justify-between items-start sm:items-center gap-3">
+              <span className="text-gray-500 flex-shrink-0">Berat</span>
+              <span className="font-semibold text-gray-800 text-right break-words max-w-[65%]">
                 {batch.weightKg.toString()} kg
               </span>
             </div>
 
-            <div className="py-3.5 flex justify-between items-center gap-4">
-              <span className="text-gray-500">Asal Kebun</span>
-              <span className="font-semibold text-gray-800 text-right">
+            <div className="py-3 sm:py-3.5 flex justify-between items-start sm:items-center gap-3">
+              <span className="text-gray-500 flex-shrink-0">Asal Kebun</span>
+              <span className="font-semibold text-gray-800 text-right break-words max-w-[65%]">
                 {batch.farmLocation}
               </span>
             </div>
 
-            <div className="py-3.5 flex justify-between items-center gap-4">
-              <span className="text-gray-500">Petani</span>
-              <span className="font-semibold text-gray-800 text-right">
+            <div className="py-3 sm:py-3.5 flex justify-between items-start sm:items-center gap-3">
+              <span className="text-gray-500 flex-shrink-0">Petani</span>
+              <span className="font-semibold text-gray-800 text-right break-words max-w-[65%]">
                 {batch.farmerName || "Petani Terdaftar"}
               </span>
             </div>
 
-            <div className="py-3.5 flex justify-between items-center gap-4">
-              <span className="text-gray-500">Tanggal Panen</span>
-              <span className="font-semibold text-gray-800 text-right">
+            <div className="py-3 sm:py-3.5 flex justify-between items-start sm:items-center gap-3">
+              <span className="text-gray-500 flex-shrink-0">Tanggal Panen</span>
+              <span className="font-semibold text-gray-800 text-right break-words max-w-[65%]">
                 {formatDateOnly(batch.createdAt)}
               </span>
             </div>
@@ -238,6 +238,7 @@ function TrackingDetailInner({
             currentStatus={batch.status}
             fallbackFarmerName={batch.farmerName}
             fallbackCreatedAt={batch.createdAt}
+            fallbackUpdatedAt={batch.updatedAt}
           />
         </div>
       </div>

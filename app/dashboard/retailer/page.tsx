@@ -213,10 +213,10 @@ export default function RetailerDashboard() {
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end pt-2 sm:pt-0">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100">
                     <Link
                       href={`/tracking/${encodeURIComponent(item.batchId)}`}
-                      className="px-5 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-semibold transition cursor-pointer"
+                      className="w-full sm:w-auto text-center justify-center min-h-[42px] flex items-center px-5 py-2.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs sm:text-sm font-semibold transition cursor-pointer"
                     >
                       Detail
                     </Link>
@@ -224,9 +224,9 @@ export default function RetailerDashboard() {
                     {item.status === BatchStatus.InTransit && (
                       <button
                         onClick={() => handleConfirmDelivery(item.batchId)}
-                        className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-[#0e7039] hover:bg-[#0b5c2e] text-white text-xs font-semibold transition shadow-xs cursor-pointer"
+                        className="w-full sm:w-auto text-center justify-center min-h-[42px] flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#0e7039] hover:bg-[#0b5c2e] text-white text-xs sm:text-sm font-semibold transition shadow-xs cursor-pointer"
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <CheckCircle2 className="w-4 h-4" />
                         Konfirmasi Diterima
                       </button>
                     )}

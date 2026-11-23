@@ -287,7 +287,7 @@ export default function AdminDashboard() {
                   value={targetAccount}
                   onChange={(e) => setTargetAccount(e.target.value)}
                   placeholder="Contoh: 0x71C...9A21"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 font-mono transition"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 font-mono transition min-h-[46px]"
                   required
                 />
               </div>
@@ -301,7 +301,7 @@ export default function AdminDashboard() {
                   value={actorName}
                   onChange={(e) => setActorName(e.target.value)}
                   placeholder="Contoh: Poktan Cianjur Makmur"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition min-h-[46px]"
                   required
                 />
               </div>
@@ -315,7 +315,7 @@ export default function AdminDashboard() {
                   onChange={(e) =>
                     setSelectedRoleKey(e.target.value as "farmer" | "logistics" | "retailer")
                   }
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 bg-white transition cursor-pointer"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 bg-white transition cursor-pointer min-h-[46px]"
                 >
                   <option value="farmer">Petani (FARMER_ROLE)</option>
                   <option value="logistics">Logistik (LOGISTICS_ROLE)</option>
@@ -323,17 +323,17 @@ export default function AdminDashboard() {
                 </select>
               </div>
 
-              <div className="pt-2 flex items-center gap-3">
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                 <button
                   type="submit"
-                  className="flex-1 bg-[#0e7039] hover:bg-[#0b5c2e] text-white py-2.5 rounded-full font-semibold text-sm transition shadow-xs cursor-pointer"
+                  className="flex-1 w-full sm:w-auto bg-[#0e7039] hover:bg-[#0b5c2e] text-white py-3 rounded-full font-semibold text-sm transition shadow-xs cursor-pointer min-h-[46px] flex items-center justify-center"
                 >
                   Berikan Akses
                 </button>
                 <button
                   type="button"
                   onClick={handleRemoveRole}
-                  className="flex-1 bg-white hover:bg-red-50 text-red-600 border border-red-300 py-2.5 rounded-full font-semibold text-sm transition cursor-pointer"
+                  className="flex-1 w-full sm:w-auto bg-white hover:bg-red-50 text-red-600 border border-red-300 py-3 rounded-full font-semibold text-sm transition cursor-pointer min-h-[46px] flex items-center justify-center"
                 >
                   Cabut Akses
                 </button>
@@ -350,20 +350,20 @@ export default function AdminDashboard() {
               </h2>
             </div>
 
-            {/* Input & Search Button */}
-            <div className="flex items-center gap-2 mb-5">
+            {/* Input & Search Button - Stacked gracefully on mobile */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 mb-5">
               <input
                 type="text"
                 value={searchAccount}
                 onChange={(e) => setSearchAccount(e.target.value)}
                 placeholder="Masukkan Kode Akun Digital"
-                className="flex-1 px-4 py-2.5 rounded-full border border-gray-200 text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                className="flex-1 px-4 py-3 rounded-full border border-gray-200 text-base sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500/20 min-h-[46px]"
               />
               <button
                 type="button"
                 onClick={() => handleCheckStatus()}
                 disabled={isSearching}
-                className="bg-[#0e7039] hover:bg-[#0b5c2e] text-white px-5 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition cursor-pointer flex-shrink-0 flex items-center gap-1.5"
+                className="w-full sm:w-auto bg-[#0e7039] hover:bg-[#0b5c2e] text-white px-6 py-3 rounded-full text-xs sm:text-sm font-semibold transition cursor-pointer flex-shrink-0 flex items-center justify-center gap-2 min-h-[46px]"
               >
                 {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : "Cek Peran"}
               </button>

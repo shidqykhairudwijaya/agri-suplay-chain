@@ -150,24 +150,24 @@ export default function BatchesPage() {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white rounded-3xl p-4 sm:p-5 border border-gray-100 shadow-xs mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
-        {/* Input Search */}
+      <div className="bg-white rounded-3xl p-3.5 sm:p-5 border border-gray-100 shadow-xs mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        {/* Input Search - Font size 16px on mobile to prevent iOS Safari auto-zoom */}
         <div className="relative flex-1">
           <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari komoditas, lokasi kebun, nama petani, atau kode panen..."
-            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-gray-50 border border-gray-200/80 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
+            placeholder="Cari komoditas, kebun, petani, kode panen..."
+            className="w-full pl-11 pr-4 py-3 rounded-2xl bg-gray-50 border border-gray-200/80 text-base sm:text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition min-h-[46px]"
           />
         </div>
 
-        {/* Status Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+        {/* Status Filter Tabs - Smooth horizontal scrolling on mobile without clipping */}
+        <div className="-mx-3.5 px-3.5 sm:mx-0 sm:px-0 flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
           <button
             onClick={() => setStatusFilter("all")}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap ${
+            className={`min-h-[40px] px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap flex items-center justify-center ${
               statusFilter === "all"
                 ? "bg-[#0e7039] text-white shadow-xs"
                 : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -177,7 +177,7 @@ export default function BatchesPage() {
           </button>
           <button
             onClick={() => setStatusFilter(BatchStatus.Harvested)}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap ${
+            className={`min-h-[40px] px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap flex items-center justify-center ${
               statusFilter === BatchStatus.Harvested
                 ? "bg-amber-600 text-white shadow-xs"
                 : "bg-amber-50 text-amber-700 hover:bg-amber-100"
@@ -187,7 +187,7 @@ export default function BatchesPage() {
           </button>
           <button
             onClick={() => setStatusFilter(BatchStatus.InTransit)}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap ${
+            className={`min-h-[40px] px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap flex items-center justify-center ${
               statusFilter === BatchStatus.InTransit
                 ? "bg-blue-600 text-white shadow-xs"
                 : "bg-blue-50 text-blue-700 hover:bg-blue-100"
@@ -197,7 +197,7 @@ export default function BatchesPage() {
           </button>
           <button
             onClick={() => setStatusFilter(BatchStatus.Delivered)}
-            className={`px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap ${
+            className={`min-h-[40px] px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition cursor-pointer whitespace-nowrap flex items-center justify-center ${
               statusFilter === BatchStatus.Delivered
                 ? "bg-[#0e7039] text-white shadow-xs"
                 : "bg-emerald-50 text-[#0e7039] hover:bg-emerald-100"
@@ -305,10 +305,10 @@ export default function BatchesPage() {
                 <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
                   <Link
                     href={`/tracking/${encodeURIComponent(item.batchId)}`}
-                    className="flex-1 bg-[#0e7039] hover:bg-[#0b5c2e] text-white py-2.5 rounded-xl font-semibold text-xs transition shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="flex-1 bg-[#0e7039] hover:bg-[#0b5c2e] text-white py-3 px-4 rounded-xl font-semibold text-xs sm:text-sm transition shadow-2xs flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
                   >
                     <span>Lacak Perjalanan</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-4 h-4" />
                   </Link>
 
                   <button
@@ -318,10 +318,10 @@ export default function BatchesPage() {
                         commodityName: item.commodityName,
                       })
                     }
-                    className="p-2.5 rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 transition cursor-pointer"
+                    className="p-2.5 rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-700 transition cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                     title="Lihat / Unduh QR Code"
                   >
-                    <QrCode className="w-4 h-4 text-[#0e7039]" />
+                    <QrCode className="w-4.5 h-4.5 text-[#0e7039]" />
                   </button>
                 </div>
               </div>

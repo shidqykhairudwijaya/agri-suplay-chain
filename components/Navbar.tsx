@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useWallet } from "@/context/WalletContext";
 import { formatAddress } from "@/lib/utils";
-import { Sprout, User, ChevronDown, LogOut, ExternalLink, RefreshCw } from "lucide-react";
+import { Sprout, User, ChevronDown, LogOut, ExternalLink, RefreshCw, Menu, X } from "lucide-react";
 import { getEtherscanAddressUrl } from "@/lib/blockchain";
 import LoginModal from "./LoginModal";
 
@@ -22,6 +22,7 @@ export default function Navbar() {
   } = useWallet();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   // Periksa apakah halaman aktif adalah Lacak Panen atau Daftar Panen
@@ -67,8 +68,8 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Center Nav Items */}
-          <nav className="flex items-center gap-8">
+          {/* Center Nav Items (Desktop Only) */}
+          <nav className="hidden md:flex items-center gap-8">
             <Link
               href="/"
               className="flex flex-col items-center text-sm font-semibold text-gray-800 hover:text-[#0e7039] transition relative py-1"
@@ -103,12 +104,12 @@ export default function Navbar() {
             )}
           </nav>
 
-          {/* Right Side: Masuk Akun / User Pill */}
-          <div className="relative">
+          {/* Right Side: Masuk Akun / User Pill & Mobile Hamburger */}
+          <div className="flex items-center gap-2">
             {!isLoggedIn || !account ? (
               <button
                 onClick={() => setIsLoginModalOpen(true)}
-                className="bg-[#0e7039] hover:bg-[#0b5c2e] text-white font-medium text-sm px-6 py-2.5 rounded-full shadow-sm hover:shadow transition-all cursor-pointer flex items-center gap-2"
+                className="bg-[#0e7039] hover:bg-[#0b5c2e] text-white font-medium text-xs sm:text-sm px-4 sm:px-6 py-2 sm:py-2.5 rounded-full shadow-sm hover:shadow transition-all cursor-pointer flex items-center gap-1.5"
               >
                 Masuk Akun
               </button>
@@ -116,17 +117,17 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="bg-white hover:bg-gray-50 border border-gray-200 rounded-full px-3.5 py-1.5 flex items-center gap-2.5 shadow-xs transition-all cursor-pointer"
+                  className="bg-white hover:bg-gray-50 border border-gray-200 rounded-full px-2.5 sm:px-3.5 py-1.5 flex items-center gap-1.5 sm:gap-2.5 shadow-xs transition-all cursor-pointer"
                 >
                   <div className="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-[#0e7039]">
                     <User className="w-3.5 h-3.5" />
                   </div>
-                  <span className="text-sm font-medium text-gray-800 max-w-[140px] truncate">
+                  <span className="text-xs sm:text-sm font-medium text-gray-800 max-w-[95px] sm:max-w-[140px] truncate">
                     {userInfo?.actorName || formatAddress(account)}
                   </span>
                   {activeRoleLabel && (
                     <span
-                      className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${getRoleBadgeClass(
+                      className={`text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-full border ${getRoleBadgeClass(
                         activeRoleLabel
                       )}`}
                     >
@@ -198,8 +199,61 @@ export default function Navbar() {
                 )}
               </div>
             )}
+
+            {/* Mobile Hamburger Toggle Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden w-9 h-9 rounded-full bg-gray-50 border border-gray-200/80 flex items-center justify-center text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition cursor-pointer"
+              aria-label="Menu Navigasi"
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Drawer Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-200/80 bg-white/98 backdrop-blur-lg px-4 py-3 space-y-1.5 animate-in slide-in-from-top-2 duration-150">
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition ${
+                isTrackingActive ? "bg-emerald-50 text-[#0e7039]" : "text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              <span>🔍 Lacak Panen</span>
+              {isTrackingActive && <span className="w-1.5 h-1.5 rounded-full bg-[#0e7039]"></span>}
+            </Link>
+
+            <Link
+              href="/batches"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition ${
+                isBatchesActive ? "bg-emerald-50 text-[#0e7039]" : "text-gray-700 hover:bg-gray-50"
+              }`}
+            >
+              <span>📦 Daftar Panen</span>
+              {isBatchesActive && <span className="w-1.5 h-1.5 rounded-full bg-[#0e7039]"></span>}
+            </Link>
+
+            {singleDashboardLink && (
+              <Link
+                href={singleDashboardLink.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition ${
+                  pathname.startsWith("/dashboard")
+                    ? "bg-emerald-50 text-[#0e7039]"
+                    : "text-gray-700 hover:bg-gray-50"
+                }`}
+              >
+                <span>🏢 {singleDashboardLink.label}</span>
+                {pathname.startsWith("/dashboard") && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#0e7039]"></span>
+                )}
+              </Link>
+            )}
+          </div>
+        )}
       </header>
 
       {/* Modal Masuk Akun */}

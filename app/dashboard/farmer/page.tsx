@@ -189,7 +189,7 @@ export default function FarmerDashboard() {
                   value={batchId}
                   onChange={(e) => setBatchId(e.target.value)}
                   placeholder="Contoh: PANEN-003"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition min-h-[46px]"
                   required
                 />
               </div>
@@ -203,7 +203,7 @@ export default function FarmerDashboard() {
                   value={commodityName}
                   onChange={(e) => setCommodityName(e.target.value)}
                   placeholder="Contoh: Beras Organik Cianjur"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition min-h-[46px]"
                   required
                 />
               </div>
@@ -218,7 +218,7 @@ export default function FarmerDashboard() {
                   value={weightKg}
                   onChange={(e) => setWeightKg(e.target.value)}
                   placeholder="Contoh: 500"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition min-h-[46px]"
                   required
                 />
               </div>
@@ -232,7 +232,7 @@ export default function FarmerDashboard() {
                   value={farmLocation}
                   onChange={(e) => setFarmLocation(e.target.value)}
                   placeholder="Contoh: Cianjur, Jawa Barat"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition min-h-[46px]"
                   required
                 />
               </div>
@@ -240,7 +240,7 @@ export default function FarmerDashboard() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full bg-[#0e7039] hover:bg-[#0b5c2e] text-white py-3 rounded-full font-semibold text-sm transition shadow-sm cursor-pointer"
+                  className="w-full bg-[#0e7039] hover:bg-[#0b5c2e] text-white py-3.5 rounded-full font-semibold text-sm transition shadow-sm cursor-pointer min-h-[48px] flex items-center justify-center"
                 >
                   Simpan Catatan Panen
                 </button>
@@ -279,13 +279,13 @@ export default function FarmerDashboard() {
                   return (
                     <div
                       key={item.batchId}
-                      className="p-4 rounded-2xl border border-gray-100 bg-white hover:bg-gray-50/50 transition flex items-center justify-between gap-3 shadow-2xs"
+                      className="p-4 sm:p-5 rounded-2xl border border-gray-100 bg-white hover:bg-gray-50/50 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 shadow-2xs"
                     >
                       <div>
-                        <h3 className="font-extrabold text-gray-900 text-base">
+                        <h3 className="font-extrabold text-gray-900 text-base sm:text-lg">
                           {item.batchId}
                         </h3>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
                           {item.commodityName} • {item.weightKg.toString()} kg
                         </p>
                         <div className="mt-2 flex items-center gap-2">
@@ -309,9 +309,9 @@ export default function FarmerDashboard() {
                             commodityName: item.commodityName,
                           })
                         }
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-gray-300 bg-white text-gray-700 text-xs font-semibold transition shadow-2xs cursor-pointer flex-shrink-0"
+                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 hover:border-gray-300 bg-white text-gray-700 text-xs sm:text-sm font-semibold transition shadow-2xs cursor-pointer flex-shrink-0 min-h-[42px]"
                       >
-                        <QrCode className="w-3.5 h-3.5 text-gray-500" />
+                        <QrCode className="w-4 h-4 text-[#0e7039]" />
                         Unduh QR Code
                       </button>
                     </div>

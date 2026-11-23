@@ -37,12 +37,12 @@ export default function TransactionModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-gray-100 relative text-center">
+      <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-gray-100 relative text-center max-h-[90vh] overflow-y-auto">
         {/* Tombol Tutup (Hanya saat sukses atau error) */}
         {(status === "success" || status === "error") && (
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition p-1.5 rounded-xl cursor-pointer"
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition p-2 rounded-xl cursor-pointer min-w-[40px] min-h-[40px] flex items-center justify-center"
           >
             <X className="w-5 h-5" />
           </button>

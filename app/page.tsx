@@ -32,19 +32,19 @@ export default function HomePage() {
       <div className="max-w-3xl mx-auto mb-16 lg:mb-20">
         <form
           onSubmit={handleSearch}
-          className="bg-white rounded-full p-2.5 pl-7 shadow-[0_4px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex items-center gap-3 transition-all focus-within:ring-2 focus-within:ring-emerald-500/20"
+          className="bg-white rounded-3xl sm:rounded-full p-2 sm:p-2.5 sm:pl-7 shadow-[0_4px_30px_rgba(0,0,0,0.06)] border border-gray-100 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 transition-all focus-within:ring-2 focus-within:ring-emerald-500/20"
         >
           <input
             type="text"
             value={searchCode}
             onChange={(e) => setSearchCode(e.target.value)}
             placeholder="Masukkan Kode Panen (cth: PANEN-001)"
-            className="flex-1 bg-transparent text-sm sm:text-base lg:text-lg text-gray-800 placeholder-gray-400 focus:outline-none"
+            className="flex-1 bg-transparent px-3 py-2 sm:px-0 sm:py-0 text-base lg:text-lg text-gray-800 placeholder-gray-400 focus:outline-none min-h-[44px]"
             required
           />
           <button
             type="submit"
-            className="bg-[#0e7039] hover:bg-[#0b5c2e] text-white px-8 py-3.5 rounded-full font-semibold text-sm sm:text-base transition-all shadow-sm hover:shadow cursor-pointer flex-shrink-0"
+            className="bg-[#0e7039] hover:bg-[#0b5c2e] text-white px-8 py-3.5 rounded-2xl sm:rounded-full font-semibold text-sm sm:text-base transition-all shadow-sm hover:shadow cursor-pointer flex-shrink-0 text-center min-h-[46px]"
           >
             Lacak Sekarang
           </button>
